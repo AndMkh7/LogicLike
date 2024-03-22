@@ -1,0 +1,10 @@
+
+.homeContainer {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  align-content: flex-start;
+  flex-direction: row;
+  gap: 24px;
+}
