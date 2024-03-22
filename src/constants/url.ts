@@ -1,0 +1,1 @@
+export const URL: string = 'https://logiclike.com/docs/courses.json'
