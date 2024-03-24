@@ -1,6 +1,6 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { useThemeContext } from "../../context/context";
-import { useFetchFilteredThemesData } from "../../utils/fetchData";
+import { useFetchAllThemes } from "../../utils/fetchData";
 import { Theme } from "../../../types";
 import chunkArray from "../../utils/arrayUtils";
 import styles from "./Themes.module.scss";
@@ -8,26 +8,34 @@ import ThemeItem from "./ThemeItem";
 
 const ThemesList = () => {
   const { activeTag, setIsLoading } = useThemeContext();
-  const [filteredData, setFilteredData] = useState<Theme[]>([]);
-  const fetchFilteredThemesData = useFetchFilteredThemesData();
+  const [allThemes, setAllThemes] = useState<Theme[]>([]);
+  const fetchAllThemesNames = useFetchAllThemes();
+
   useEffect(() => {
     const fetchDataAndSetState = async () => {
       setIsLoading(true);
       try {
-        const filteredThemesData = await fetchFilteredThemesData(activeTag);
-        setFilteredData(filteredThemesData);
+        const themesData = await fetchAllThemesNames();
+        setAllThemes(themesData);
       } catch (error) {
         console.error("Error loading data:", error);
       } finally {
-        setIsLoading(false);
+        setTimeout(() => setIsLoading(false), 1000);
       }
     };
     fetchDataAndSetState();
-  }, [activeTag]);
+  }, [fetchAllThemesNames, setIsLoading]);
 
-  if (!filteredData) {
+  const filteredData = useMemo(() => {
+    if (!allThemes.length) return [];
+    if (activeTag === "Все темы") return allThemes;
+    return allThemes.filter((theme) => theme.tags.includes(activeTag));
+  }, [allThemes, activeTag]);
+
+  if (!filteredData.length) {
     return null;
   }
+
   return (
     <div className={styles.themesContainer}>
       <div className={styles.column}>

@@ -24,7 +24,7 @@ const SidebarList = () => {
       } catch (error) {
         console.error("Error loading data:", error);
       } finally {
-        setIsLoading(false);
+        setTimeout(() => setIsLoading(false), 1000);
       }
     };
 
