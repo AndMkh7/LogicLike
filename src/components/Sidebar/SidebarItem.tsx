@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useCallback, useState } from "react";
 import styles from "./Sidebar.module.scss";
 import { useThemeContext } from "../../context/context";
 import SkeletonSidebarItem from "./SkeletonSidebarItem";
@@ -13,6 +13,16 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   handleOnTagClick,
 }) => {
   const { activeTag, isLoading } = useThemeContext();
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseEnter = useCallback(() => {
+    setIsHovered(true);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setIsHovered(false);
+  }, []);
+
   return isLoading ? (
     <SkeletonSidebarItem />
   ) : (
@@ -23,8 +33,15 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       onClick={() => {
         handleOnTagClick(themeName);
       }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      <p className={styles.sidebarListItemText}>{themeName}</p>
+      <p
+        className={styles.sidebarListItemText}
+        style={{ color: isHovered ? "#5FBF77" : "" }}
+      >
+        {themeName}
+      </p>
     </div>
   );
 };
